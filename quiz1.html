@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentence Fragments Quiz - English 101</title>
+    
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f0f4f7;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            font-weight: 600;
+        }
+
+        #question-number {
+            color: #3498db;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        #question-text {
+            font-size: 1.4em;
+            margin-bottom: 30px;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+        #answer-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            background-color: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            color: #2c3e50;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            text-align: left;
+            font-size: 1em;
+            font-weight: 500;
+        }
+
+        .btn:hover:not(.disabled) {
+            background-color: #dbe4e9;
+            transform: translateY(-2px);
+        }
+        
+        /* Feedback Colors */
+        .btn.correct {
+            background-color: #d4edda; /* Light Green */
+            border-color: #4a9e65;
+            color: #155724; /* Dark Green Text */
+            font-weight: bold;
+        }
+
+        .btn.incorrect {
+            background-color: #f8d7da; /* Light Red */
+            border-color: #dc3545;
+            color: #721c24; /* Dark Red Text */
+            font-weight: bold;
+        }
+
+        .btn.disabled {
+            cursor: default;
+            opacity: 0.8;
+        }
+
+        #next-btn, #restart-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 20px;
+            transition: background-color 0.2s;
+            box-shadow: 0 4px #2980b9;
+        }
+
+        #next-btn:hover:not(.hidden), #restart-btn:hover {
+            background-color: #2980b9;
+        }
+
+        #next-btn:active, #restart-btn:active {
+            box-shadow: 0 2px #2980b9;
+            transform: translateY(2px);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #results h2 {
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        #score-text {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>College English 101: Sentence Fragments Quiz 📝</h1>
+        
+        <div id="quiz-box">
+            <h2 id="question-number">Question X of Y</h2>
+            <p id="question-text">Question goes here.</p>
+            
+            <div id="answer-buttons">
+                </div>
+            
+            <button id="next-btn" class="hidden">Next</button>
+        </div>
+        
+        <div id="results" class="hidden">
+            <h2>Quiz Complete! Excellent Work! ✅</h2>
+            <p id="score-text">Your score: 0/5</p>
+            <button id="restart-btn">Review/Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data based on the provided PDF guide
+        const questions = [
+            {
+                number: 1,
+                question: "Identify the type of fragment: **Went to the store.**",
+                answers: [
+                    { text: "Missing Verb", correct: false },
+                    { text: "Missing Subject", correct: true },
+                    { text: "Subordinate Clause Fragment", correct: false },
+                    { text: "Phrase Fragment", correct: false }
+                ]
+            },
+            {
+                number: 2,
+                question: "Which of the following is a correct way to fix the fragment: **Because it was raining.**",
+                answers: [
+                    { text: "It was raining.", correct: true }, // Corrected by removing subordinating conjunction
+                    { text: "It was raining because.", correct: false },
+                    { text: "Because it was raining, we stayed inside.", correct: true }, // Corrected by attaching to a complete sentence
+                    { text: "To avoid the rain.", correct: false }
+                ]
+            },
+            {
+                number: 3,
+                question: "Which essential component is missing from the fragment: **The dog, very fluffy and playful.**",
+                answers: [
+                    { text: "A Complete Thought", correct: false },
+                    { text: "A Subject", correct: false },
+                    { text: "A Verb (e.g., 'is', 'was', 'ran')", correct: true },
+                    { text: "An Object", correct: false }
+                ]
+            },
+            {
+                number: 4,
+                question: "Which option below is a **complete sentence** (i.e., NOT a fragment)?",
+                answers: [
+                    { text: "Running down the street quickly and without a care.", correct: false },
+                    { text: "The children were running down the street.", correct: true },
+                    { text: "Although I was tired.", correct: false },
+                    { text: "With great enthusiasm.", correct: false }
+                ]
+            },
+            {
+                number: 5,
+                question: "According to our guide, a complete sentence must contain all three of these 'Building Blocks':",
+                answers: [
+                    { text: "Noun, Adjective, and Adverb", correct: false },
+                    { text: "Subject, Verb, and Complete Thought", correct: true },
+                    { text: "Independent Clause, Dependent Clause, and Conjunction", correct: false },
+                    { text: "Phrase, Clause, and Modifier", correct: false }
+                ]
+            }
+        ];
+
+        // Get DOM elements
+        const quizBox = document.getElementById("quiz-box");
+        const resultsDiv = document.getElementById("results");
+        const questionNumberEl = document.getElementById("question-number");
+        const questionTextEl = document.getElementById("question-text");
+        const answerButtonsEl = document.getElementById("answer-buttons");
+        const nextButton = document.getElementById("next-btn");
+        const restartButton = document.getElementById("restart-btn");
+        const scoreTextEl = document.getElementById("score-text");
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            nextButton.classList.add("hidden"); // Hide next button on start
+            resultsDiv.classList.add("hidden");
+            quizBox.classList.remove("hidden");
+            nextButton.innerHTML = "Next";
+            showQuestion();
+        }
+
+        function showQuestion() {
+            resetState();
+            const currentQuestion = questions[currentQuestionIndex];
+            questionNumberEl.innerHTML = `Question ${currentQuestion.number} of ${questions.length}`;
+            questionTextEl.innerHTML = currentQuestion.question;
+
+            currentQuestion.answers.forEach(answer => {
+                const button = document.createElement("button");
+                button.innerHTML = answer.text;
+                button.classList.add("btn");
+                answerButtonsEl.appendChild(button);
+                
+                // Store the correct state on the button
+                if (answer.correct) {
+                    button.dataset.correct = answer.correct;
+                }
+                button.addEventListener("click", selectAnswer);
+            });
+        }
+
+        function resetState() {
+            nextButton.classList.add("hidden");
+            while (answerButtonsEl.firstChild) {
+                answerButtonsEl.removeChild(answerButtonsEl.firstChild);
+            }
+        }
+
+        function selectAnswer(e) {
+            // Only proceed if an answer has not already been selected
+            if (answerButtonsEl.firstChild.classList.contains('disabled')) return;
+            
+            const selectedButton = e.target;
+            const isCorrect = selectedButton.dataset.correct === "true";
+
+            let correctSelections = 0;
+            let totalCorrectAnswers = 0;
+            
+            // Iterate over all answer buttons to provide feedback
+            Array.from(answerButtonsEl.children).forEach(button => {
+                const isButtonCorrect = button.dataset.correct === "true";
+                if (isButtonCorrect) {
+                    totalCorrectAnswers++;
+                    button.classList.add("correct");
+                }
+                
+                // Mark the selected button
+                if (button === selectedButton) {
+                    if (isCorrect) {
+                        correctSelections++;
+                    } else {
+                        button.classList.add("incorrect");
+                    }
+                }
+
+                // Disable all buttons
+                button.classList.add("disabled");
+                button.removeEventListener("click", selectAnswer);
+            });
+            
+            // Handle scoring for questions with multiple correct options (Question 2)
+            // A simple correct/incorrect is fine for a basic quiz, but if there's only one selected answer, 
+            // the score is determined by the selection.
+            if (isCorrect && totalCorrectAnswers === 1) {
+                 score++;
+            } else if (isCorrect && totalCorrectAnswers > 1) {
+                // For multiple correct answers, if the single selection is one of them, it counts.
+                // This logic simplifies multi-select down to single-select scoring.
+                score++;
+            }
+            
+            // Show the 'Next' button
+            nextButton.classList.remove("hidden");
+
+            // Change 'Next' button text on the last question
+            if (currentQuestionIndex === questions.length - 1) {
+                nextButton.innerHTML = "Finish Quiz & See Results";
+            }
+        }
+
+        function handleNextButton() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizBox.classList.add("hidden");
+            resultsDiv.classList.remove("hidden");
+            scoreTextEl.innerHTML = `Your Final Score: ${score} out of ${questions.length}`;
+        }
+
+        // Event Listeners
+        nextButton.addEventListener("click", handleNextButton);
+        restartButton.addEventListener("click", startQuiz);
+
+        // Start the quiz when the page loads
+        startQuiz();
+    </script>
+</body>
+</html>
