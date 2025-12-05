@@ -1,0 +1,151 @@
+const questions = [
+    {
+        number: 1,
+        question: "Identify the type of fragment: **Went to the store.**",
+        answers: [
+            { text: "Missing Verb", correct: false },
+            { text: "Missing Subject", correct: true },
+            { text: "Subordinate Clause Fragment", correct: false },
+            { text: "Phrase Fragment", correct: false }
+        ]
+    },
+    {
+        number: 2,
+        question: "Correct the fragment: **Because it was raining.**",
+        answers: [
+            { text: "Because it was raining, we stayed inside.", correct: true },
+            { text: "It was raining.", correct: true }, // Both corrections are valid according to source
+            { text: "It was raining because.", correct: false },
+            { text: "We stayed inside.", correct: false }
+        ]
+    },
+    {
+        number: 3,
+        question: "Which component is missing from the group of words: **The dog, very fluffy and playful.**",
+        answers: [
+            { text: "A Complete Thought", correct: false },
+            { text: "A Subject", correct: false },
+            { text: "A Verb (state of being)", correct: true },
+            { text: "A Prepositional Phrase", correct: false }
+        ]
+    },
+    {
+        number: 4,
+        question: "Which sentence is **NOT** a fragment?",
+        answers: [
+            { text: "With great enthusiasm.", correct: false },
+            { text: "Running down the street.", correct: false },
+            { text: "The children were running down the street.", correct: true },
+            { text: "To learn a new language.", correct: false }
+        ]
+    },
+    {
+        number: 5,
+        question: "A sentence must contain all three of these elements:",
+        answers: [
+            { text: "Subject, Predicate, and Object", correct: false },
+            { text: "Noun, Adjective, and Adverb", correct: false },
+            { text: "Subject, Verb, and Complete Thought", correct: true },
+            { text: "Independent Clause, Dependent Clause, and Conjunction", correct: false }
+        ]
+    }
+];
+
+// DOM elements
+const quizBox = document.getElementById("quiz-box");
+const resultsDiv = document.getElementById("results");
+const questionNumberEl = document.getElementById("question-number");
+const questionTextEl = document.getElementById("question-text");
+const answerButtonsEl = document.getElementById("answer-buttons");
+const nextButton = document.getElementById("next-btn");
+const restartButton = document.getElementById("restart-btn");
+const scoreTextEl = document.getElementById("score-text");
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+function startQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    nextButton.classList.remove("hidden");
+    resultsDiv.classList.add("hidden");
+    quizBox.classList.remove("hidden");
+    nextButton.innerHTML = "Next";
+    showQuestion();
+}
+
+function showQuestion() {
+    resetState();
+    const currentQuestion = questions[currentQuestionIndex];
+    questionNumberEl.innerHTML = `Question ${currentQuestion.number} of ${questions.length}`;
+    questionTextEl.innerHTML = currentQuestion.question;
+
+    currentQuestion.answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.innerHTML = answer.text;
+        button.classList.add("btn");
+        answerButtonsEl.appendChild(button);
+        if (answer.correct) {
+            // Store the correct state on the button itself, but don't show it yet
+            button.dataset.correct = answer.correct;
+        }
+        button.addEventListener("click", selectAnswer);
+    });
+}
+
+function resetState() {
+    nextButton.classList.add("hidden");
+    while (answerButtonsEl.firstChild) {
+        answerButtonsEl.removeChild(answerButtonsEl.firstChild);
+    }
+}
+
+function selectAnswer(e) {
+    const selectedButton = e.target;
+    const isCorrect = selectedButton.dataset.correct === "true";
+
+    // Disable all buttons and show correct/incorrect
+    Array.from(answerButtonsEl.children).forEach(button => {
+        if (button.dataset.correct === "true") {
+            button.classList.add("correct");
+        }
+        button.classList.add("disabled");
+        button.removeEventListener("click", selectAnswer);
+    });
+
+    if (isCorrect) {
+        score++;
+    } else {
+        selectedButton.classList.add("incorrect");
+    }
+
+    // Show the 'Next' button
+    nextButton.classList.remove("hidden");
+
+    // Change 'Next' button text on the last question
+    if (currentQuestionIndex === questions.length - 1) {
+        nextButton.innerHTML = "Finish Quiz";
+    }
+}
+
+function handleNextButton() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+        showQuestion();
+    } else {
+        showResults();
+    }
+}
+
+function showResults() {
+    quizBox.classList.add("hidden");
+    resultsDiv.classList.remove("hidden");
+    scoreTextEl.innerHTML = `Your score: ${score}/${questions.length}`;
+}
+
+// Event Listeners
+nextButton.addEventListener("click", handleNextButton);
+restartButton.addEventListener("click", startQuiz);
+
+// Start the quiz when the page loads
+startQuiz();
