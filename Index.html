@@ -130,3 +130,68 @@
         <section id="about">
             <h2>💡 What You'll Learn</h2>
             <p style="text-align: center; max-width: 800px; margin: 0 auto;">
+                This hands-on workshop is designed for web developers looking to transition from static applications to **dynamically intelligent** ones. We'll cover everything from API integration to front-end prompting best practices, using practical, real-world examples.
+                Bring your laptop and get ready to code!
+            </p>
+        </section>
+
+        <hr>
+
+        <section id="agenda">
+            <h2>🗓️ Workshop Agenda</h2>
+            <ul class="agenda-list">
+                <li><strong>9:00 AM:</strong> Welcome & Introduction to AI in Web Development</li>
+                <li><strong>10:00 AM:</strong> **Module 1:** Setting up your environment and API access (Hands-on)</li>
+                <li><strong>11:30 AM:</strong> Coffee Break & Networking</li>
+                <li><strong>11:45 AM:</strong> **Module 2:** Building a simple text-generation feature (Live coding)</li>
+                <li><strong>1:00 PM:</strong> Lunch Break (Provided)</li>
+                <li><strong>2:00 PM:</strong> **Module 3:** Advanced Prompt Engineering for better results</li>
+                <li><strong>3:00 PM:</strong> **Module 4:** Image and Media AI integration (Introduction & Demo)</li>
+                <li><strong>3:45 PM:</strong> Q&A and Next Steps</li>
+            </ul>
+        </section>
+
+        <hr>
+
+        <section id="registration">
+            <h2>🚀 Secure Your Spot!</h2>
+            <p>Seats are limited. Click below to register and receive your pre-workshop materials.</p>
+            <button id="register-btn">Register for the Jen AI Workshop</button>
+            <p id="registration-message">Click the button to confirm your interest!</p>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Your Website Name | Powered by Jen AI</p>
+        </div>
+    </footer>
+
+    <script>
+        // Get elements from the DOM
+        const registerButton = document.getElementById('register-btn');
+        const messageDisplay = document.getElementById('registration-message');
+
+        // Function to handle the button click event
+        function handleRegistration() {
+            // Change the text to give the user immediate feedback
+            messageDisplay.textContent = "Thank you! Check your email for a confirmation link shortly.";
+            
+            // Disable the button to prevent multiple submissions (in a real app, you'd submit a form here)
+            registerButton.disabled = true;
+            registerButton.style.backgroundColor = '#6c757d'; // Change color to indicate disabled
+            registerButton.textContent = "Registration Confirmed!";
+
+            // Log an event to the console (useful for debugging)
+            console.log("User registered for the Jen AI Workshop.");
+        }
+
+        // Attach the function to the button's click event
+        registerButton.addEventListener('click', handleRegistration);
+
+        // Optional: A simple check when the page loads
+        console.log("Jen AI Workshop page loaded successfully.");
+    </script>
+
+</body>
+</html>
